@@ -20,6 +20,7 @@ export abstract class Client {
         videoHost: string
         responseType: string
         timeout: number
+        inputJwt?: string
     };
 
   constructor(
@@ -30,6 +31,7 @@ export abstract class Client {
             videoHost: string
             responseType: ResponseTypes
             timeout: number
+            jwt: string
         },
   ) {
     if (typeof credentials.getQueryParams === 'undefined') {
@@ -50,6 +52,7 @@ export abstract class Client {
     this.config.videoHost
             = options?.videoHost || 'https://video.api.vonage.com';
     this.config.responseType = options?.responseType || ResponseTypes.json;
+    this.config.inputJwt = options?.jwt;
   }
 
   public static transformers = transfomers;
@@ -64,7 +67,8 @@ export abstract class Client {
       break;
     case AuthenticationType.JWT:
       request.headers = Object.assign({}, request.headers, {
-        Authorization: this.auth.createBearerHeader(),
+        Authorization:
+                        this.config.inputJwt || this.auth.createBearerHeader(),
       });
       break;
     case AuthenticationType.QUERY_KEY_SECRET:

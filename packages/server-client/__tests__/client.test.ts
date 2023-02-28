@@ -1,8 +1,13 @@
 import { Auth } from '@vonage/auth';
 import { Client } from '../lib/index';
+import { AuthenticationType } from '../lib/enums/AuthenticationType';
 import dataSet from './__dataSets__/index';
 
 class MockClient extends Client {}
+
+class MockJwtClient extends Client {
+  protected authType = AuthenticationType.JWT;
+}
 
 describe.each(dataSet)('$label', ({ tests }) => {
   test.each(tests)(
@@ -46,5 +51,18 @@ describe('server client', () => {
     expect(request.data.foo).toEqual('bar');
     expect(request.data.api_key).toEqual('abcd');
     expect(request.data.api_secret).toEqual('1234');
+  });
+
+  test('input jwt used as credentials in request header', async () => {
+    const client = new MockJwtClient(
+      new Auth({ applicationId: '123456' }),
+      { jwt: 'test-jwt' },
+    );
+    const request = client.addAuthenticationToRequest({
+      method: 'POST',
+      data: { foo: 'bar' },
+    });
+
+    expect(request.headers.Authorization).toEqual('test-jwt');
   });
 });
