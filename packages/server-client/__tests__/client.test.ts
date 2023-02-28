@@ -60,7 +60,6 @@ describe('server client', () => {
     );
     const request = client.addAuthenticationToRequest({
       method: 'POST',
-      data: { foo: 'bar' },
     });
 
     expect(request.headers.Authorization).toEqual('test-jwt');

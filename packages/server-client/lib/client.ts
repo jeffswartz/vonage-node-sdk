@@ -67,8 +67,7 @@ export abstract class Client {
       break;
     case AuthenticationType.JWT:
       request.headers = Object.assign({}, request.headers, {
-        Authorization:
-                        this.config.inputJwt || this.auth.createBearerHeader(),
+        Authorization: this.config.inputJwt || this.auth.createBearerHeader(),
       });
       break;
     case AuthenticationType.QUERY_KEY_SECRET:
